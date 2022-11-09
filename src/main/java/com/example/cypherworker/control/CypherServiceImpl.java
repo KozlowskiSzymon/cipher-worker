@@ -52,7 +52,7 @@ public class CypherServiceImpl implements CypherService{
     log.info("[Cypher] Decryption of: [{}], for user: [{}] started.",cypherText, userId);
 
     KeyFactory keyFactory = KeyFactory.getInstance(config.getAlgorithm());
-    EncodedKeySpec privateKey = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(cypherRepository.findByUserId(userId).getKey()));
+    EncodedKeySpec privateKey = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(cypherRepository.findByUserId(userId).getPrivateKey()));
     String decrypt = decrypt(config.getAlgorithm(), cypherText, keyFactory.generatePrivate(privateKey));
 
     log.info("[Cypher] Decryption of: [{}], for user: [{}] ended.",cypherText, userId);
@@ -85,7 +85,7 @@ public class CypherServiceImpl implements CypherService{
     KeyPair pair = generateKeys(config.getKeySize());
     cypherRepository.save(Key.builder()
         .userId(userId)
-        .key(Base64.getEncoder().encodeToString(pair.getPrivate().getEncoded()))
+        .privateKey(Base64.getEncoder().encodeToString(pair.getPrivate().getEncoded()))
         .build());
     return Base64.getEncoder()
         .encodeToString(pair.getPublic().getEncoded());
