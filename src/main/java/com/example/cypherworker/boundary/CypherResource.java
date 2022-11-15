@@ -1,5 +1,6 @@
 package com.example.cypherworker.boundary;
 
+import com.example.cypherworker.control.CypherService;
 import com.example.cypherworker.control.CypherServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,23 +25,23 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequiredArgsConstructor
 public class CypherResource {
 
-  private final CypherServiceImpl cypherServiceImpl;
+  private final CypherService cypherService;
 
   @GetMapping("/keys")
   public ResponseEntity<String> generateKeyPairForUser(@RequestParam("userId") long userId) throws NoSuchAlgorithmException {
-    return ok(cypherServiceImpl.generateKeys(userId));
+    return ok(cypherService.generateKeys(userId));
   }
 
   @PostMapping("/encrypt")
   public ResponseEntity<String> encrypt(@RequestBody CypherDTO cypherDTO) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException,
       BadPaddingException, InvalidKeyException, InvalidKeySpecException {
-    return ok(cypherServiceImpl.encrypt(cypherDTO.getValue(), cypherDTO.getPublicKey()));
+    return ok(cypherService.encrypt(cypherDTO.getValue(), cypherDTO.getPublicKey()));
   }
 
   @PostMapping("/decrypt")
   public ResponseEntity<String> decrypt(@RequestBody CypherDTO cypherDTO) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException,
       BadPaddingException, InvalidKeyException, InvalidKeySpecException {
-    return ok(cypherServiceImpl.decrypt(cypherDTO.getValue(), cypherDTO.getUserId()));
+    return ok(cypherService.decrypt(cypherDTO.getValue(), cypherDTO.getUserId()));
   }
 
 }
