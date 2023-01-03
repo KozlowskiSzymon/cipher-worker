@@ -60,6 +60,18 @@ public class CypherServiceImpl implements CypherService{
     return decrypt;
   }
 
+  public String generateKeys(long userId) throws NoSuchAlgorithmException {
+    log.info("[Cypher] Generating keys for user with id : [{}], with: [{}] [{}].", userId, config.getAlgorithm(), config.getKeySize());
+    KeyPair pair = generateKeys(config.getKeySize());
+    cypherRepository.save(Key.builder()
+        .userId(userId)
+        .privateKey(Base64.getEncoder().encodeToString(pair.getPrivate().getEncoded()))
+        .build());
+    log.info("[Cypher] Finished generating keys for user with id : [{}].", userId);
+    return Base64.getEncoder()
+        .encodeToString(pair.getPublic().getEncoded());
+  }
+
   private String encrypt(String algorithm, String input, PublicKey publicKey) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException,
       BadPaddingException, IllegalBlockSizeException {
 
@@ -79,16 +91,6 @@ public class CypherServiceImpl implements CypherService{
     byte[] plainText = cipher.doFinal(Base64.getDecoder()
         .decode(cypherText));
     return new String(plainText);
-  }
-
-  public String generateKeys(long userId) throws NoSuchAlgorithmException {
-    KeyPair pair = generateKeys(config.getKeySize());
-    cypherRepository.save(Key.builder()
-        .userId(userId)
-        .privateKey(Base64.getEncoder().encodeToString(pair.getPrivate().getEncoded()))
-        .build());
-    return Base64.getEncoder()
-        .encodeToString(pair.getPublic().getEncoded());
   }
 
   private KeyPair generateKeys(int n) throws NoSuchAlgorithmException {
