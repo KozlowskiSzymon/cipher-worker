@@ -1,0 +1,34 @@
+server:
+  port: 8082
+
+app:
+  cypher:
+    key:
+      size: 1024
+    algorithm: RSA
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/workload?currentSchema:cypher
+    username: workload
+    password: abc123
+  jpa:
+    properties:
+      hibernate:
+        default_schema: cypher
+
+management:
+  server:
+    port: 8082
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: [ "health","prometheus", "metrics" ]
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
