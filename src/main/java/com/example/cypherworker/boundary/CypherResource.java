@@ -25,8 +25,8 @@ public class CypherResource {
 
   private final CypherRepository cypherRepository;
 
-  @GetMapping("/keys")
-  public ResponseEntity<String> generateKeyPairForUser(@RequestParam("userId") long userId) {
+  @PostMapping("/keys")
+  public ResponseEntity<String> generateKeyPairForUser(@RequestBody long userId) {
     return ok(new KeyGenerator(config, cypherRepository).apply(userId));
   }
 
