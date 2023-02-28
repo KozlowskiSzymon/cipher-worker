@@ -6,6 +6,7 @@ import com.example.cypherworker.control.Encrypter;
 import com.example.cypherworker.control.KeyGenerator;
 import com.example.cypherworker.model.CypherRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +20,7 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequestMapping("/api/cypher")
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class CypherResource {
 
   private final CypherConfig config;
@@ -27,16 +29,19 @@ public class CypherResource {
 
   @PostMapping("/keys")
   public ResponseEntity<String> generateKeyPairForUser(@RequestBody long userId) {
+    log.info("CypherResource.generateKeyPairForUser POST /keys");
     return ok(new KeyGenerator(config, cypherRepository).apply(userId));
   }
 
   @PostMapping("/encrypt")
   public ResponseEntity<String> encrypt(@RequestBody CypherDTO cypherDTO) {
+    log.info("CypherResource.encrypt POST /encrypt");
     return ok(new Encrypter(config).apply(cypherDTO));
   }
 
   @PostMapping("/decrypt")
   public ResponseEntity<String> decrypt(@RequestBody CypherDTO cypherDTO) {
+    log.info("CypherResource.decrypt POST /decrypt");
     return ok(new Decrypter(config, cypherRepository).apply(cypherDTO));
   }
 
