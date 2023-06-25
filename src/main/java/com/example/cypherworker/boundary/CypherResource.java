@@ -25,12 +25,10 @@ public class CypherResource {
 
   private final CypherConfig config;
 
-  private final CypherRepository cypherRepository;
-
   @PostMapping("/keys")
-  public ResponseEntity<String> generateKeyPairForUser(@RequestBody long userId) {
+  public ResponseEntity<CypherDTO> generateKeyPairForUser(@RequestBody long userId) {
     log.info("CypherResource.generateKeyPairForUser POST /keys");
-    return ok(new KeyGenerator(config, cypherRepository).apply(userId));
+    return ok(new KeyGenerator(config).apply(userId));
   }
 
   @PostMapping("/encrypt")
@@ -42,7 +40,7 @@ public class CypherResource {
   @PostMapping("/decrypt")
   public ResponseEntity<String> decrypt(@RequestBody CypherDTO cypherDTO) {
     log.info("CypherResource.decrypt POST /decrypt");
-    return ok(new Decrypter(config, cypherRepository).apply(cypherDTO));
+    return ok(new Decrypter(config).apply(cypherDTO));
   }
 
 }

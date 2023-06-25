@@ -27,8 +27,6 @@ public class Decrypter implements Function<CypherDTO, String> {
 
     private CypherConfig config;
 
-    private CypherRepository cypherRepository;
-
     @Override
     public String apply(CypherDTO cypherDTO) {
         log.info("[Cypher] Decryption of: [{}], for user: [{}] started.",cypherDTO.getValue(), cypherDTO.getUserId());
@@ -39,7 +37,7 @@ public class Decrypter implements Function<CypherDTO, String> {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-        EncodedKeySpec privateKey = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(cypherRepository.findByUserId(cypherDTO.getUserId()).getPrivateKey()));
+        EncodedKeySpec privateKey = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(cypherDTO.getPrivateKey()));
         String decrypt;
         try {
             decrypt = decrypt(config.getAlgorithm(), cypherDTO.getValue(), keyFactory.generatePrivate(privateKey));
